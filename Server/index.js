@@ -7,6 +7,10 @@ import Book from "../Server/Modules/Book.js";
 import Student from "../Server/Modules/Student.js";
 import mongoose from "mongoose"; 
 import BorrowBook from "./Modules/BorrowBook.js";
+import { login, register } from "./Controllers/authController.js";
+import { getBooks,addBook,updateBook,deleteBook} from "./Controllers/bookController.js";
+import {getStudentDetails} from "./Controllers/studentController.js"
+
 
 dotenv.config();
 const app = express();
@@ -61,97 +65,19 @@ app.post("/borrow", async (req, res) => {
     }
 });
 
-app.post("/register", async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-
-        const existingUser = await Student.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-     
-        const newUser = new Student({
-            name,
-            email,
-            password: hashedPassword,
-            role: role || "student" 
-        });
-
-        await newUser.save();
-        res.status(201).json({ message: "Registration successful" });
-
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-});
+app.post("/register",register )
 
 
 const JWT_SECRET = "your_secret_key_here"; 
 
-app.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await Student.findOne({ email });
-
-        if (!user) return res.status(401).json({ message: "Invalid email or password" });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ message: "Invalid email or password" });
-
-     
-        const token = jwt.sign(
-            { userId: user._id, role: user.role }, 
-            JWT_SECRET, 
-            { expiresIn: "1h" }
-        );
-
-        res.json({ message: "Login successful", token, role: user.role });
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-});
+app.post("/login", login)
 
 
 
-app.get("/students/:id", async (req, res) => {
-    try {
-        const studentId = req.params.id;
-        const student = await Student.findById(studentId, "name email");
-        if (!student) {
-            return res.status(404).json({ message: "Student not found" });
-        }
-
-        const borrowedBooks = await BorrowBook.find({ student: studentId }, "book borrowDate returnDate penalty");
-
-        res.json({
-            _id: student._id,
-            name: student.name,
-            email: student.email,
-            borrowedBooks: borrowedBooks.map(b => ({
-                bookId: b.book,
-                borrowDate: b.borrowDate,
-                returnDate: b.returnDate || "Not Returned",
-                penalty: b.penalty
-            }))
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching student details", error: error.message });
-    }
-});
+app.get("/students/:id", getStudentDetails)
 
 
 
-app.get("/books", async (req, res) => {
-    try {
-        const books = await Book.find();
-        res.json({ success: true, books });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error fetching books", error: error.message });
-    }
-});
 const authenticate = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1]; 
 
@@ -173,46 +99,13 @@ const authenticate = (req, res, next) => {
     }
     next();
 };
+app.get("/books", getBooks);
 
-app.post("/books", authenticate, isAdmin, async (req, res) => {
-    try {
-        const { title, author, cover, language, rating, year, availableCopies, totalCopies } = req.body;
-        const newBook = new Book({ title, author, cover, language, rating, year, availableCopies, totalCopies });
-        const savedBook = await newBook.save();
-        res.status(201).json({ success: true, message: "Book Created", data: savedBook });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error creating book", error: error.message });
-    }
-});
+app.post("/books", authenticate, isAdmin,addBook)
 
+app.put("/books/:id", authenticate, isAdmin, updateBook)
 
-app.put("/books/:id", authenticate, isAdmin, async (req, res) => {
-    try {
-        const { title, author, cover, language, rating, year, availableCopies, totalCopies } = req.body;
-        const updatedBook = await Book.findByIdAndUpdate(req.params.id, 
-            { title, author, cover, language, rating, year, availableCopies, totalCopies },
-            { new: true } 
-        );
-
-        if (!updatedBook) return res.status(404).json({ success: false, message: "Book not found" });
-
-        res.json({ success: true, message: "Book Updated", data: updatedBook });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error updating book", error: error.message });
-    }
-});
-
-
-app.delete("/books/:id", authenticate, isAdmin, async (req, res) => {
-    try {
-        const deletedBook = await Book.findByIdAndDelete(req.params.id);
-        if (!deletedBook) return res.status(404).json({ success: false, message: "Book not found" });
-
-        res.json({ success: true, message: "Book Deleted" });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error deleting book", error: error.message });
-    }
-});
+app.delete("/books/:id", authenticate, isAdmin, deleteBook)
 
 
 app.use("*", (req, res) => res.status(404).json({ message: "NOT Found" }));
