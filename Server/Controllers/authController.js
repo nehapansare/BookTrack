@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Student from "../models/Student.js";
+import Student from "../Modules/Student.js";
 
 const JWT_SECRET = "your_secret_key_here";
 
