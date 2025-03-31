@@ -3,12 +3,20 @@ import Book from "../Modules/Book.js";
 // Get all books
 export const getBooks = async (req, res) => {
     try {
-        const books = await Book.find();
+        const { genre } = req.query; // Get genre from query params
+
+        let filter = {};
+        if (genre) {
+            filter.genres = genre; // Filter books by genre
+        }
+
+        const books = await Book.find(filter);
         res.json({ success: true, books });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error fetching books", error: error.message });
     }
 };
+
 
 // Add a new book (POST)
 export const addBook = async (req, res) => {
