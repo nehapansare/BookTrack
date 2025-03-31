@@ -12,7 +12,7 @@ function Home() {
         <img 
           src={homeImage} 
           alt="Home" 
-          className="w-[1450px] h-[700px] object-cover" 
+          className="w-full h-full object-cover" 
         />
         <Link 
           to="/bookshelf" 
