@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer className="bg-[#476442] text-white text-center p-6 mt-10 flex flex-col items-center">
+    <footer className="bg-[#476442] text-white text-center p-6  flex flex-col items-center">
       <div className="flex justify-between w-full max-w-10xl gap-20">
         {/* Box 1: Logo and Description */}
         <div className="flex flex-col items-center w-1/2">
