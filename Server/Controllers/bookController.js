@@ -1,5 +1,6 @@
 import Book from "../Modules/Book.js";
 
+// Get all books
 export const getBooks = async (req, res) => {
     try {
         const books = await Book.find();
@@ -9,11 +10,11 @@ export const getBooks = async (req, res) => {
     }
 };
 
-
+// Add a new book (POST)
 export const addBook = async (req, res) => {
     try {
-        const { title, author, cover, language, rating, year, availableCopies, totalCopies } = req.body;
-        const newBook = new Book({ title, author, cover, language, rating, year, availableCopies, totalCopies });
+        const { title, author, cover, language, rating, year, availableCopies, totalCopies, genres } = req.body;
+        const newBook = new Book({ title, author, cover, language, rating, year, availableCopies, totalCopies, genres });
         const savedBook = await newBook.save();
         res.status(201).json({ success: true, message: "Book Created", data: savedBook });
     } catch (error) {
@@ -21,13 +22,14 @@ export const addBook = async (req, res) => {
     }
 };
 
-
+// Update book details
 export const updateBook = async (req, res) => {
     try {
-        const { title, author, cover, language, rating, year, availableCopies, totalCopies } = req.body;
-        const updatedBook = await Book.findByIdAndUpdate(req.params.id, 
-            { title, author, cover, language, rating, year, availableCopies, totalCopies },
-            { new: true } 
+        const { title, author, cover, language, rating, year, availableCopies, totalCopies, genres } = req.body;
+        const updatedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            { title, author, cover, language, rating, year, availableCopies, totalCopies, genres },
+            { new: true }
         );
 
         if (!updatedBook) return res.status(404).json({ success: false, message: "Book not found" });
@@ -38,7 +40,7 @@ export const updateBook = async (req, res) => {
     }
 };
 
-
+// Delete a book
 export const deleteBook = async (req, res) => {
     try {
         const deletedBook = await Book.findByIdAndDelete(req.params.id);
