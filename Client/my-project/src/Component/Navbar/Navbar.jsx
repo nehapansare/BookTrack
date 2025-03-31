@@ -6,7 +6,7 @@ function Navbar() {
       <div>
         <img src="/logo.png" alt="Logo" className="h-10" />
       </div>
-      <div className="flex gap-5 text-lg">
+      <div className="flex gap-5 text-xl">
         <a href="/" className="text-white no-underline">Home</a>
         <a href="/bookshelf" className="text-white no-underline">BookShelf</a>
       </div>
