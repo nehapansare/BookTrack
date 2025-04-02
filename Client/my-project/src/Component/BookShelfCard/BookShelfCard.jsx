@@ -17,7 +17,7 @@ function BookCard({ _id, title, author, cover, year, language, rating, genres })
         <div className="mt-3 flex justify-center">
           <Link to={`/book/${_id}`} state={{ title, author, cover, year, language, rating, genres }}>
             <button className="bg-[#A7F1A8] text-black font-semibold px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300">
-              Borrow
+              Open
             </button>
           </Link>
         </div>
