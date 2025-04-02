@@ -22,7 +22,6 @@ export const register = async (req, res) => {
     }
 };
 
-
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -35,7 +34,13 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
 
-        res.json({ message: "Login successful", token, role: user.role });
+        // Include user data in the response
+        res.json({
+            message: "Login successful",
+            token,
+            role: user.role,
+            user: { id: user._id, name: user.name, email: user.email } // Add user details
+        });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
