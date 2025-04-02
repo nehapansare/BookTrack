@@ -70,16 +70,18 @@ function BookShelf() {
             {filteredBooks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredBooks.map((book, index) => (
-                    <BookCard
-                        key={index}  
-                        title={book.title}
-                        author={book.author}
-                        cover={book.cover}
-                        year={book.year}
-                        language={book.language}
-                        rating={book.rating}
-                        genres={book.genres}
-                    />
+                   <BookCard
+                   key={index}
+                   _id={book._id}  
+                   title={book.title}
+                   author={book.author}
+                   cover={book.cover}
+                   year={book.year}
+                   language={book.language}
+                   rating={book.rating}
+                   genres={book.genres}
+               />
+               
                 ))}
             </div>
             ) : (
