@@ -10,7 +10,7 @@ import BorrowBook from "./Modules/BorrowBook.js";
 import { login, register } from "./Controllers/authController.js";
 import { getBooks,addBook,updateBook,deleteBook} from "./Controllers/bookController.js";
 import {getStudentDetails} from "./Controllers/studentController.js"
-import {borrowBook} from "./Controllers/borrowController.js"
+import {borrowBook,getBorrowedBooksByStudent} from "./Controllers/borrowController.js"
 
 
 dotenv.config();
@@ -35,6 +35,8 @@ app.get("/health", (req, res) => res.json({ message: "Server is running" }));
 
 
 
+
+app.get("/borrowed/:studentId",  getBorrowedBooksByStudent);
 
 app.post("/borrow", borrowBook);
 
