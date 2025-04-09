@@ -7,6 +7,7 @@ import BookShelf from './Component/BookShelf/BookShelf';
 import Login from './Views/Login/Login';
 import BookDetail from '../src/Component/BookDetail/BookDetail'; // Make sure this import is correct
 import StudentDashboard from './Component/StudentDashboard/StudentDashboard';
+import AdminDashboard from './Component/AdminDashboard/AdminDashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -24,13 +25,17 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/book/:id", // New route for book details
+    path: "/book/:id", 
     element: <BookDetail />,
   },
   {
-    path: "/studentdashboard", // New route for book details
+    path: "/studentdashboard", 
     element: <StudentDashboard />,
   },
+  {
+    path: "/admindashboard", 
+    element: <AdminDashboard />,
+  }
 
 ]);
 
