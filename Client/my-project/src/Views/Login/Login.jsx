@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import backgroundImage from '../../assets/img/image8.jpg'; 
+import backgroundImage from '../../assets/img/image8.jpg';
 
 function Login() {
-    const [credentials, setCredentials] = useState({ 
-        email: "", 
+    const [credentials, setCredentials] = useState({
+        name: "",
+        email: "",
         password: "",
-        name: ""
     });
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -18,52 +18,76 @@ function Login() {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!credentials.email || !credentials.password) {
-            toast.error("Please fill in all fields");
+
+        if (!credentials.email || !credentials.password || (!isLogin && !credentials.name)) {
+            toast.error("Please fill in all required fields.");
             return;
         }
 
         setIsLoading(true);
+
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {
-                email: credentials.email,
-                password: credentials.password
-            });
+            if (isLogin) {
+                // Login API call
+                const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {
+                    email: credentials.email,
+                    password: credentials.password,
+                });
 
-            console.log("API Response:", data); // Debugging log
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("role", data.role);
+                localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("studentId", data.user.id);
 
-            // Store token and user data in localStorage
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role);  
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("studentId", data.user.id);  // ✅ Store student ID separately
-            
-            toast.success("Login successful!");
-            navigate("/"); // Redirect to home page after login
+                toast.success("Login successful!");
+
+                navigate(data.role === "admin" ? "/admindashboard" : "/");
+            } else {
+                // Register API call
+                const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/register`, {
+                    name: credentials.name,
+                    email: credentials.email,
+                    password: credentials.password,
+                });
+
+                toast.success("Account created! Please login.");
+                setIsLogin(true); // Switch to login view
+                setCredentials({ name: "", email: "", password: "" });
+            }
         } catch (error) {
-            toast.error(error.response?.data?.message || "Login failed. Please try again.");
+            toast.error(error.response?.data?.message || "Something went wrong!");
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div 
-            className="flex justify-center items-center min-h-screen bg-gray-100" 
-            style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        <div
+            className="flex justify-center items-center min-h-screen bg-gray-100"
+            style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+            }}
         >
             <Toaster position="top-center" />
-            <div className="bg-white p-6 rounded-lg shadow-md w-150" style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", height: "auto", minHeight: "450px" }}>
-                <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
+            <div
+                className="bg-white p-6 rounded-lg shadow-md w-96"
+                style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    minHeight: "450px",
+                }}
+            >
+                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     {isLogin ? "Welcome Back" : "Create Account"}
                 </h2>
-                
-                <form className="space-y-4">
+
+                <form className="space-y-4" onSubmit={handleSubmit}>
                     {!isLogin && (
                         <div>
-                            <label htmlFor="name" className="text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                                 Full Name
                             </label>
                             <input
@@ -77,9 +101,9 @@ function Login() {
                             />
                         </div>
                     )}
-                    
+
                     <div>
-                        <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                             Email Address
                         </label>
                         <input
@@ -88,13 +112,13 @@ function Login() {
                             name="email"
                             value={credentials.email}
                             onChange={handleChange}
-                            placeholder="your@email.com"
+                            placeholder="you@example.com"
                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    
+
                     <div>
-                        <label htmlFor="password" className="text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                             Password
                         </label>
                         <input
@@ -107,17 +131,29 @@ function Login() {
                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    
+
                     <button
-                        onClick={handleLogin}
+                        type="submit"
                         disabled={isLoading}
-                        className={`w-full mt-6 py-3 rounded-md font-medium text-white`}
-                        style={{
-                            backgroundColor: isLoading ? "#476442" : "#476545",
-                        }}
+                        className="w-full mt-4 py-3 rounded-md font-medium text-white"
+                        style={{ backgroundColor: isLoading ? "#476442" : "#476545" }}
                     >
-                        {isLoading ? "Processing..." : "Sign In"}
+                        {isLoading ? "Processing..." : isLogin ? "Sign In" : "Register"}
                     </button>
+
+                    <p className="text-center text-sm mt-4 text-gray-700">
+                        {isLogin ? "Don't have an account?" : "Already have an account?"}
+                        <button
+                            type="button"
+                            className="text-blue-600 ml-1 underline"
+                            onClick={() => {
+                                setIsLogin(!isLogin);
+                                setCredentials({ name: "", email: "", password: "" });
+                            }}
+                        >
+                            {isLogin ? "Register" : "Login"}
+                        </button>
+                    </p>
                 </form>
             </div>
         </div>
