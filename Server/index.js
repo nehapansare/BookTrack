@@ -8,7 +8,7 @@ import Student from "../Server/Modules/Student.js";
 import mongoose from "mongoose"; 
 import BorrowBook from "./Modules/BorrowBook.js";
 import { login, register } from "./Controllers/authController.js";
-import { getBooks,addBook,updateBook,deleteBook} from "./Controllers/bookController.js";
+import { getBooks,addBook,updateBook,deleteBook, getBookById} from "./Controllers/bookController.js";
 import {getStudentDetails} from "./Controllers/studentController.js"
 import {borrowBook,getBorrowedBooksByStudent} from "./Controllers/borrowController.js"
 
@@ -75,12 +75,13 @@ const authenticate = (req, res, next) => {
     next();
 };
 app.get("/books", getBooks);
+app.get("/books/:id", getBookById);
 
 app.post("/books", authenticate, isAdmin,addBook)
 
-app.put("/books/:id", authenticate, isAdmin, updateBook)
+app.put("/books/:id", authenticate,  updateBook)
 
-app.delete("/books/:id", authenticate, isAdmin, deleteBook)
+app.delete("/books/:id", authenticate, deleteBook)
 
 
 app.use("*", (req, res) => res.status(404).json({ message: "NOT Found" }));
