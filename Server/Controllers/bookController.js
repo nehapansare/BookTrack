@@ -59,3 +59,15 @@ export const deleteBook = async (req, res) => {
         res.status(500).json({ success: false, message: "Error deleting book", error: error.message });
     }
 };
+
+export const getBookById = async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        if (!book) {
+            return res.status(404).json({ success: false, message: "Book not found" });
+        }
+        res.json({ success: true, book });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error fetching book", error: error.message });
+    }
+};
