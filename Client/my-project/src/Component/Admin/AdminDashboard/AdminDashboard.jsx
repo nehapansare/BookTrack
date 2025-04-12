@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
-import { FiMenu } from 'react-icons/fi'; // For menu icon
+import { FiMenu } from 'react-icons/fi'; 
 
 const AdminDashboard = () => {
   const [books, setBooks] = useState([]);
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
   <li
     className="cursor-pointer hover:text-blue-500"
     onClick={() => {
-      navigate('/student');
+      navigate('/adminstudent');
       setSidebarOpen(false);
     }}
   >
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
   <li
     className="cursor-pointer hover:text-blue-500"
     onClick={() => {
-      navigate('/addbook');
+      navigate('/adminadd');
       setSidebarOpen(false);
     }}
   >
@@ -141,19 +141,21 @@ const AdminDashboard = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <div className="bg-gray-100 p-6 rounded-xl shadow-md text-center">
-            <h3 className="text-lg font-semibold">Total Books</h3>
-            <p className="text-2xl mt-2">{dummyStats.totalBooks}</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-xl shadow-md text-center">
-            <h3 className="text-lg font-semibold">Total Users</h3>
-            <p className="text-2xl mt-2">{dummyStats.totalUsers}</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-xl shadow-md text-center">
-            <h3 className="text-lg font-semibold">Total Orders</h3>
-            <p className="text-2xl mt-2">{dummyStats.totalOrders}</p>
-          </div>
-        </div>
+  <div className="bg-purple-200 text-purple-800 p-6 rounded-xl shadow-md text-center">
+    <h3 className="text-lg font-semibold">Total Books</h3>
+    <p className="text-2xl mt-2 font-bold">{dummyStats.totalBooks}</p>
+  </div>
+  <div className="bg-pink-200 text-pink-800 p-6 rounded-xl shadow-md text-center">
+    <h3 className="text-lg font-semibold">Total Users</h3>
+    <p className="text-2xl mt-2 font-bold">{dummyStats.totalUsers}</p>
+  </div>
+  <div className="bg-indigo-200 text-indigo-800 p-6 rounded-xl shadow-md text-center">
+    <h3 className="text-lg font-semibold">Total Orders</h3>
+    <p className="text-2xl mt-2 font-bold">{dummyStats.totalOrders}</p>
+  </div>
+</div>
+
+
 
         {/* Book List */}
         <h3 className="text-xl font-semibold mb-4">Books List</h3>
@@ -183,20 +185,21 @@ const AdminDashboard = () => {
                   <p className="text-sm text-gray-600 mb-4">
                     <span className="font-medium">Year:</span> {book.year}
                   </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(book._id)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-sm"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm"
-                    >
-                      🗑 Delete
-                    </button>
-                  </div>
+                  <div className="flex gap-2 mt-4">
+  <button
+    onClick={() => handleEdit(book._id)}
+    className="flex-1 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-100 transition-colors"
+  >
+    Edit
+  </button>
+  <button
+    onClick={() => handleDelete(book._id)}
+    className="flex-1 bg-red-50 text-red-500 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors"
+  >
+    Delete
+  </button>
+</div>
+
                 </div>
               ))
             ) : (
