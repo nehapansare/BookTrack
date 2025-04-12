@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const AdminEdit = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const AdminEdit = () => {
         const bookData = response.data?.book;
 
         if (!bookData) {
-          console.error("Book data is missing in response");
+          toast.error("Book not found");
           return;
         }
 
@@ -40,7 +41,7 @@ const AdminEdit = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching book data:", error);
+        toast.error("Failed to load book data");
       }
     };
 
@@ -66,7 +67,7 @@ const AdminEdit = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("You are not logged in!");
+        toast.error("Not authorized");
         return;
       }
 
@@ -76,11 +77,11 @@ const AdminEdit = () => {
         }
       });
 
-      alert("Book updated successfully!");
-      navigate("/admindashboard");
+      toast.success("Book updated!");
+
+      setTimeout(() => navigate("/admindashboard"), 1000);
     } catch (error) {
-      console.error("Error updating book:", error);
-      alert("Failed to update book. Please try again.");
+      toast.error("Update failed");
     }
   };
 
