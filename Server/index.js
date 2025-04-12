@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 import BorrowBook from "./Modules/BorrowBook.js";
 import { login, register } from "./Controllers/authController.js";
 import { getBooks,addBook,updateBook,deleteBook, getBookById} from "./Controllers/bookController.js";
-import {getStudentDetails} from "./Controllers/studentController.js"
+import {getAllStudentsDetails} from "./Controllers/studentController.js"
 import {borrowBook,getBorrowedBooksByStudent} from "./Controllers/borrowController.js"
 
 
@@ -49,7 +49,7 @@ app.post("/login", login)
 
 
 
-app.get("/students/:id", getStudentDetails)
+app.get("/students", getAllStudentsDetails)
 
 
 
@@ -77,7 +77,7 @@ const authenticate = (req, res, next) => {
 app.get("/books", getBooks);
 app.get("/books/:id", getBookById);
 
-app.post("/books", authenticate, isAdmin,addBook)
+app.post("/books", authenticate, addBook)
 
 app.put("/books/:id", authenticate,  updateBook)
 
