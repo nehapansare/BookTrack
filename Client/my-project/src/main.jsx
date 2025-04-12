@@ -7,7 +7,10 @@ import BookShelf from './Component/BookShelf/BookShelf';
 import Login from './Views/Login/Login';
 import BookDetail from '../src/Component/BookDetail/BookDetail'; // Make sure this import is correct
 import StudentDashboard from './Component/StudentDashboard/StudentDashboard';
-import AdminDashboard from './Component/AdminDashboard/AdminDashboard';
+import AdminDashboard from './Component/Admin/AdminDashboard/AdminDashboard';
+import AdminEdit from './Component/Admin/AdminEdit/AdminEdit';
+import AdminAdd from './Component/Admin/AdminAdd/AdminAdd';
+import AdminStudent from './Component/Admin/AdminStudent/AdminStudent';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -35,8 +38,20 @@ const router = createBrowserRouter([
   {
     path: "/admindashboard", 
     element: <AdminDashboard />,
+  },
+  {
+    path: "/adminedit/:id",  
+    element: <AdminEdit />,
+  },
+  {
+    path: "/adminadd",  
+    element: <AdminAdd/>,
+  },
+  {
+    path: "/adminstudent",  
+    element: <AdminStudent/>,
   }
-
+  
 ]);
 
 root.render(
